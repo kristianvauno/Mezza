@@ -1,0 +1,9 @@
+node_modules/
+qa/
+*.log
+.DS_Store
+Thumbs.db
+cut-logo.js
+qa-header.js
+verify.js
+package-lock.json

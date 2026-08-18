@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en-PH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My profile | Mezza</title>
+  <meta name="description" content="Your Mezza realtor profile and property listings in General Santos City.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body data-page="profile">
+  <header id="site-header" class="site-header"></header>
+  <main class="wrap page-hero">
+    <p class="eyebrow">Account</p>
+    <h1>My profile</h1>
+    <p class="lede">Keep your desk details here, then stack the properties you are selling or renting.</p>
+
+    <form class="form-card" id="profile-form" style="margin-top: 22px; max-width: 880px;">
+      <h2>Your desk</h2>
+      <div class="desk-layout">
+        <div class="avatar-field">
+          <img id="pf-photo-preview" class="avatar-preview" src="images/logo.png" alt="Profile picture">
+          <label class="btn btn-ghost" for="pf-photo">Change photo</label>
+          <input id="pf-photo" type="file" accept="image/*">
+        </div>
+        <div class="form-grid">
+        <div class="field">
+          <label for="pf-name">Full name</label>
+          <input id="pf-name" name="name" required>
+        </div>
+        <div class="field">
+          <label for="pf-email">Email</label>
+          <input id="pf-email" name="email" type="email" readonly>
+        </div>
+        <div class="field">
+          <label for="pf-phone">Mobile</label>
+          <input id="pf-phone" name="phone" inputmode="tel" placeholder="09xx">
+        </div>
+        <div class="field">
+          <label for="pf-whatsapp">WhatsApp</label>
+          <input id="pf-whatsapp" name="whatsapp" inputmode="tel" placeholder="0917 825 4300">
+        </div>
+        <div class="field">
+          <label for="pf-agency">Agency or desk</label>
+          <input id="pf-agency" name="agency" placeholder="Your realty name">
+        </div>
+        <div class="field">
+          <label for="pf-prc">PRC license no.</label>
+          <input id="pf-prc" name="prc" placeholder="REB">
+        </div>
+        <div class="field">
+          <label for="pf-city">City</label>
+          <input id="pf-city" name="city" value="General Santos City">
+        </div>
+        <div class="field full">
+          <label for="pf-bio">About your listings</label>
+          <textarea id="pf-bio" name="bio" rows="3" placeholder="Barangays you cover, property types, how buyers should reach you."></textarea>
+        </div>
+        </div>
+      </div>
+      <button class="btn btn-clay" type="submit" style="margin-top: 16px;">Save profile</button>
+      <div class="success" id="pf-ok" hidden>Profile saved on this device.</div>
+    </form>
+
+    <section class="section" style="padding-bottom: 0;">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Inventory</p>
+          <h2>Your properties</h2>
+          <p>Mark each one as selling or a rental so buyers can filter the right list.</p>
+        </div>
+      </div>
+
+      <div class="search-tabs" role="tablist" style="margin-bottom: 16px;">
+        <button type="button" data-cat="all" aria-selected="true">All</button>
+        <button type="button" data-cat="selling" aria-selected="false">Selling</button>
+        <button type="button" data-cat="rentals" aria-selected="false">Rentals</button>
+      </div>
+      <p class="tiny" id="listing-count" style="margin-bottom: 14px;"></p>
+      <div class="results-grid" id="my-listings"></div>
+    </section>
+
+    <form class="form-card" id="listing-form" style="margin-top: 28px;">
+      <h2 id="listing-form-title">Add a property</h2>
+      <div class="form-grid">
+        <div class="field">
+          <label for="ls-category">Category</label>
+          <select id="ls-category" name="category" required>
+            <option value="selling">Selling</option>
+            <option value="rentals">Rentals</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="ls-type">Property type</label>
+          <select id="ls-type" name="type" required>
+            <option value="house">House and lot</option>
+            <option value="townhouse">Townhouse</option>
+            <option value="duplex">Duplex</option>
+            <option value="lot">Residential lot</option>
+            <option value="commercial">Commercial</option>
+            <option value="warehouse">Warehouse</option>
+            <option value="farm">Farm lot</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="ls-title">Listing title</label>
+          <input id="ls-title" name="title" required placeholder="3-Bedroom house in Lagao">
+        </div>
+        <div class="field">
+          <label for="ls-barangay">Barangay</label>
+          <select id="ls-barangay" name="barangay" required>
+            <option>Apopong</option>
+            <option>Bula</option>
+            <option>Calumpang</option>
+            <option>City Heights</option>
+            <option>Conel</option>
+            <option>Dadiangas West</option>
+            <option>Fatima</option>
+            <option>Katangawan</option>
+            <option>Labangal</option>
+            <option selected>Lagao</option>
+            <option>San Isidro</option>
+            <option>Tambler</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="ls-location">Location</label>
+          <div class="pin-search">
+            <input id="ls-location" name="address" required placeholder="Street, purok, or landmark in General Santos City">
+            <button class="btn btn-ghost" type="button" id="ls-find">Find</button>
+          </div>
+          <p class="tiny">Click the map to drop a pin, or drag the pin to the exact lot.</p>
+          <div id="ls-map" class="pin-map" role="application" aria-label="Pin listing location on the map"></div>
+          <p class="tiny" id="ls-coords">No pin yet — tap the map.</p>
+          <input type="hidden" id="ls-lat" name="lat">
+          <input type="hidden" id="ls-lng" name="lng">
+        </div>
+        <div class="field">
+          <label for="ls-price">Price (₱)</label>
+          <input id="ls-price" name="price" type="number" min="0" step="1000" required>
+        </div>
+        <div class="field">
+          <label for="ls-beds">Bedrooms</label>
+          <input id="ls-beds" name="beds" type="number" min="0" value="0">
+        </div>
+        <div class="field">
+          <label for="ls-baths">Baths</label>
+          <input id="ls-baths" name="baths" type="number" min="0" value="0">
+        </div>
+        <div class="field">
+          <label for="ls-lot">Lot sqm</label>
+          <input id="ls-lot" name="lotSqm" type="number" min="0" value="0">
+        </div>
+        <div class="field">
+          <label for="ls-floor">Floor sqm</label>
+          <input id="ls-floor" name="floorSqm" type="number" min="0" value="0">
+        </div>
+        <div class="field">
+          <label for="ls-titletype">Title</label>
+          <select id="ls-titletype" name="titleType">
+            <option>TCT</option>
+            <option>CCT</option>
+            <option>Tax Declaration</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="ls-parking">Parking</label>
+          <input id="ls-parking" name="parkingNote" placeholder="Covered 2-car carport">
+        </div>
+        <div class="field">
+          <label for="ls-condition">Condition</label>
+          <input id="ls-condition" name="condition" placeholder="Well-maintained, move-in ready">
+        </div>
+        <div class="field full">
+          <label class="choice"><input type="checkbox" id="ls-pagibig" name="pagibigReady"> Pag-IBIG ready</label>
+        </div>
+        <div class="field full">
+          <label class="choice"><input type="checkbox" id="ls-inspected" name="inspected2026"> Inspected (2026)</label>
+        </div>
+        <div class="field full photo-upload">
+          <span class="field-label">Photos</span>
+          <p class="tiny">Add up to 8 photos. The first one becomes the cover.</p>
+          <label class="btn btn-ghost" for="ls-photos" style="margin-top: 8px;">Upload images</label>
+          <input id="ls-photos" type="file" accept="image/*" multiple>
+          <div class="photo-thumbs" id="ls-thumbs"></div>
+        </div>
+        <div class="field full">
+          <label for="ls-desc">Description</label>
+          <textarea id="ls-desc" name="description" rows="5" placeholder="Full write-up of the house, lot, and neighborhood."></textarea>
+        </div>
+        <div class="field full">
+          <label for="ls-features">Key features &amp; amenities</label>
+          <textarea id="ls-features" name="features" rows="4" placeholder="One feature per line — e.g. Master bedroom with private bathroom"></textarea>
+        </div>
+        <div class="field full">
+          <label for="ls-why">Why this property</label>
+          <textarea id="ls-why" name="why" rows="3" placeholder="Why a buyer should choose this listing."></textarea>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+        <button class="btn btn-clay" type="submit" id="listing-submit">Add listing</button>
+        <button class="btn btn-ghost" type="button" id="listing-cancel" hidden>Cancel edit</button>
+      </div>
+    </form>
+  </main>
+  <div class="modal" id="remove-modal" hidden>
+    <div class="modal-card confirm-card" role="dialog" aria-modal="true" aria-labelledby="remove-title">
+      <h3 id="remove-title">Remove this listing?</h3>
+      <p id="remove-copy">Are you sure you want to remove this listing? This cannot be undone.</p>
+      <div class="confirm-actions">
+        <button class="btn btn-ghost" type="button" id="remove-cancel">Cancel</button>
+        <button class="btn btn-clay" type="button" id="remove-confirm">Yes, remove</button>
+      </div>
+    </div>
+  </div>
+  <footer id="site-footer"></footer>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var user = currentUser();
+      if (!user) {
+        location.replace("login.html");
+        return;
+      }
+
+      document.getElementById("pf-name").value = user.name || "";
+      document.getElementById("pf-email").value = user.email || "";
+      document.getElementById("pf-phone").value = user.phone || "";
+      document.getElementById("pf-whatsapp").value = user.whatsapp || user.phone || "";
+      document.getElementById("pf-agency").value = user.agency || "";
+      document.getElementById("pf-prc").value = user.prc || "";
+      document.getElementById("pf-city").value = user.city || "General Santos City";
+      document.getElementById("pf-bio").value = user.bio || "";
+      var photoData = user.photo || "";
+      if (photoData) document.getElementById("pf-photo-preview").src = photoData;
+
+      document.getElementById("pf-photo").addEventListener("change", function (e) {
+        var file = e.target.files && e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function () {
+          var img = new Image();
+          img.onload = function () {
+            var size = 400;
+            var canvas = document.createElement("canvas");
+            canvas.width = size;
+            canvas.height = size;
+            var ctx = canvas.getContext("2d");
+            var min = Math.min(img.width, img.height);
+            ctx.drawImage(img, (img.width - min) / 2, (img.height - min) / 2, min, min, 0, 0, size, size);
+            photoData = canvas.toDataURL("image/jpeg", 0.82);
+            document.getElementById("pf-photo-preview").src = photoData;
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      var filterCat = "all";
+
+      function accountIndex() {
+        return getAccounts().findIndex(function (a) {
+          return a.email.toLowerCase() === user.email.toLowerCase();
+        });
+      }
+
+      function myListings() {
+        var accounts = getAccounts();
+        var i = accountIndex();
+        return i >= 0 ? (accounts[i].listings || []) : [];
+      }
+
+      function writeListings(list) {
+        var accounts = getAccounts();
+        var i = accountIndex();
+        if (i < 0) {
+          accounts.push({ email: user.email, name: user.name || "", listings: list });
+        } else {
+          accounts[i].listings = list;
+        }
+        saveAccounts(accounts);
+        user = currentUser();
+      }
+
+      function renderMine() {
+        var list = myListings().filter(function (item) {
+          return filterCat === "all" || item.category === filterCat;
+        });
+        var host = document.getElementById("my-listings");
+        var count = document.getElementById("listing-count");
+        var selling = myListings().filter(function (x) { return x.category === "selling"; }).length;
+        var rentals = myListings().filter(function (x) { return x.category === "rentals"; }).length;
+        count.textContent = selling + " selling · " + rentals + " rentals";
+        if (!list.length) {
+          host.innerHTML = '<div class="empty"><h3>No ' + (filterCat === "all" ? "" : filterCat + " ") + "listings yet</h3><p>Add a property below and choose Selling or Rentals.</p></div>";
+          return;
+        }
+        host.innerHTML = list.map(function (item) {
+          var p = normalizeRealtorListing(item, user);
+          return '<div>' + cardHTML(p) +
+            '<div style="display:flex;gap:8px;margin-top:8px">' +
+            '<button class="btn btn-ghost" type="button" data-edit-listing="' + item.id + '">Edit</button>' +
+            '<button class="btn btn-ghost" type="button" data-remove-listing="' + item.id + '">Remove</button></div></div>';
+        }).join("");
+      }
+
+      document.getElementById("profile-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var accounts = getAccounts();
+        var i = accountIndex();
+        var next = Object.assign({}, i >= 0 ? accounts[i] : { email: user.email, listings: [] }, {
+          name: document.getElementById("pf-name").value.trim(),
+          phone: document.getElementById("pf-phone").value.trim(),
+          whatsapp: document.getElementById("pf-whatsapp").value.trim(),
+          agency: document.getElementById("pf-agency").value.trim(),
+          prc: document.getElementById("pf-prc").value.trim(),
+          city: document.getElementById("pf-city").value.trim(),
+          bio: document.getElementById("pf-bio").value.trim(),
+          photo: photoData
+        });
+        if (i >= 0) accounts[i] = next;
+        else accounts.push(next);
+        saveAccounts(accounts);
+        document.getElementById("pf-ok").hidden = false;
+      });
+
+      document.querySelectorAll("[data-cat]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          filterCat = btn.getAttribute("data-cat");
+          document.querySelectorAll("[data-cat]").forEach(function (b) {
+            b.setAttribute("aria-selected", b === btn ? "true" : "false");
+          });
+          renderMine();
+        });
+      });
+
+      var listingPhotos = [];
+      var editingId = null;
+
+      function resetListingForm() {
+        editingId = null;
+        document.getElementById("listing-form").reset();
+        document.getElementById("listing-form-title").textContent = "Add a property";
+        document.getElementById("listing-submit").textContent = "Add listing";
+        document.getElementById("listing-cancel").hidden = true;
+        listingPhotos = [];
+        renderThumbs();
+        pinLat = null;
+        pinLng = null;
+        if (pinMarker) {
+          listingMap.removeLayer(pinMarker);
+          pinMarker = null;
+        }
+        listingMap.setView(GENSAN, 13);
+        document.getElementById("ls-coords").textContent = "No pin yet — tap the map.";
+        document.getElementById("ls-category").value = "selling";
+      }
+
+      function fillListingForm(item) {
+        editingId = item.id;
+        document.getElementById("listing-form-title").textContent = "Edit listing";
+        document.getElementById("listing-submit").textContent = "Save changes";
+        document.getElementById("listing-cancel").hidden = false;
+        document.getElementById("ls-category").value = item.category || "selling";
+        document.getElementById("ls-type").value = item.type || "house";
+        document.getElementById("ls-title").value = item.title || "";
+        document.getElementById("ls-barangay").value = item.barangay || "Lagao";
+        document.getElementById("ls-location").value = item.address || "";
+        document.getElementById("ls-price").value = item.price || "";
+        document.getElementById("ls-beds").value = item.beds || 0;
+        document.getElementById("ls-baths").value = item.baths || 0;
+        document.getElementById("ls-lot").value = item.lotSqm || 0;
+        document.getElementById("ls-floor").value = item.floorSqm || 0;
+        document.getElementById("ls-titletype").value = item.titleType || "TCT";
+        document.getElementById("ls-parking").value = item.parkingNote || "";
+        document.getElementById("ls-condition").value = item.condition || "";
+        document.getElementById("ls-pagibig").checked = !!item.pagibigReady;
+        document.getElementById("ls-inspected").checked = !!item.inspected2026;
+        document.getElementById("ls-desc").value = item.description || "";
+        document.getElementById("ls-features").value = (item.highlights || []).join("\n");
+        document.getElementById("ls-why").value = item.why || "";
+        listingPhotos = (item.images || []).slice();
+        renderThumbs();
+        if (item.lat != null && item.lng != null) setPin(item.lat, item.lng, true);
+        document.getElementById("listing-form").scrollIntoView({ behavior: "smooth", block: "start" });
+        setTimeout(function () { listingMap.invalidateSize(); }, 250);
+      }
+      var GENSAN = [6.1164, 125.1716];
+      var BARANGAY_COORDS = {
+        Apopong: [6.135, 125.16],
+        Bula: [6.09, 125.175],
+        Calumpang: [6.112, 125.155],
+        "City Heights": [6.121, 125.175],
+        Conel: [6.175, 125.185],
+        "Dadiangas West": [6.114, 125.171],
+        Fatima: [6.155, 125.145],
+        Katangawan: [6.145, 125.195],
+        Labangal: [6.112, 125.168],
+        Lagao: [6.119, 125.182],
+        "San Isidro": [6.128, 125.181],
+        Tambler: [6.058, 125.096]
+      };
+      var pinLat = null;
+      var pinLng = null;
+      var pinMarker = null;
+      var listingMap = L.map("ls-map").setView(GENSAN, 13);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap"
+      }).addTo(listingMap);
+      setTimeout(function () { listingMap.invalidateSize(); }, 200);
+
+      function setPin(lat, lng, fly) {
+        pinLat = Number(lat);
+        pinLng = Number(lng);
+        document.getElementById("ls-lat").value = pinLat.toFixed(6);
+        document.getElementById("ls-lng").value = pinLng.toFixed(6);
+        document.getElementById("ls-coords").textContent =
+          "Pinned at " + pinLat.toFixed(5) + ", " + pinLng.toFixed(5);
+        if (pinMarker) {
+          pinMarker.setLatLng([pinLat, pinLng]);
+        } else {
+          pinMarker = L.marker([pinLat, pinLng], { draggable: true }).addTo(listingMap);
+          pinMarker.on("dragend", function () {
+            var pos = pinMarker.getLatLng();
+            setPin(pos.lat, pos.lng, false);
+          });
+        }
+        if (fly) listingMap.setView([pinLat, pinLng], 16);
+      }
+
+      listingMap.on("click", function (ev) {
+        setPin(ev.latlng.lat, ev.latlng.lng, false);
+      });
+
+      document.getElementById("ls-barangay").addEventListener("change", function () {
+        var spot = BARANGAY_COORDS[this.value];
+        if (spot && pinLat == null) listingMap.setView(spot, 14);
+      });
+
+      document.getElementById("ls-find").addEventListener("click", function () {
+        var q = document.getElementById("ls-location").value.trim();
+        if (!q) return;
+        var url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" +
+          encodeURIComponent(q + ", General Santos City, Philippines");
+        fetch(url, { headers: { Accept: "application/json" } })
+          .then(function (res) { return res.json(); })
+          .then(function (rows) {
+            if (!rows || !rows[0]) {
+              document.getElementById("ls-coords").textContent = "No match. Click the map to pin it.";
+              return;
+            }
+            setPin(rows[0].lat, rows[0].lon, true);
+            if (rows[0].display_name) {
+              document.getElementById("ls-location").value = rows[0].display_name.split(",").slice(0, 3).join(",").trim();
+            }
+          })
+          .catch(function () {
+            document.getElementById("ls-coords").textContent = "Search unavailable. Click the map to pin it.";
+          });
+      });
+
+      document.getElementById("ls-location").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          document.getElementById("ls-find").click();
+        }
+      });
+
+      function resizeImage(file) {
+        return new Promise(function (resolve) {
+          var reader = new FileReader();
+          reader.onload = function () {
+            var img = new Image();
+            img.onload = function () {
+              var max = 1100;
+              var scale = Math.min(1, max / Math.max(img.width, img.height));
+              var canvas = document.createElement("canvas");
+              canvas.width = Math.round(img.width * scale);
+              canvas.height = Math.round(img.height * scale);
+              canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+              resolve(canvas.toDataURL("image/jpeg", 0.74));
+            };
+            img.src = reader.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function renderThumbs() {
+        var host = document.getElementById("ls-thumbs");
+        host.innerHTML = listingPhotos.map(function (src, i) {
+          return '<div class="photo-thumb"><img src="' + src + '" alt="Property photo ' + (i + 1) + '"><button type="button" data-remove-photo="' + i + '" aria-label="Remove photo">×</button></div>';
+        }).join("");
+      }
+
+      document.getElementById("ls-photos").addEventListener("change", function (e) {
+        var files = Array.prototype.slice.call(e.target.files || []);
+        e.target.value = "";
+        var room = Math.max(0, 8 - listingPhotos.length);
+        files.slice(0, room).forEach(function (file) {
+          resizeImage(file).then(function (src) {
+            if (listingPhotos.length >= 8) return;
+            listingPhotos.push(src);
+            renderThumbs();
+          });
+        });
+      });
+
+      document.getElementById("ls-thumbs").addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-remove-photo]");
+        if (!btn) return;
+        listingPhotos.splice(Number(btn.getAttribute("data-remove-photo")), 1);
+        renderThumbs();
+      });
+
+      document.getElementById("listing-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var form = e.target;
+        var data = Object.fromEntries(new FormData(form).entries());
+        if (pinLat == null || pinLng == null) {
+          document.getElementById("ls-coords").textContent = "Pin the property on the map before you save it.";
+          document.getElementById("ls-map").scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+        var current = editingId ? myListings().find(function (x) { return x.id === editingId; }) : null;
+        var item = {
+          id: editingId || ("mine-" + Date.now()),
+          ref: (current && current.ref) || ("MZ-" + String(Date.now()).slice(-6)),
+          category: data.category,
+          intent: listingCategoryToIntent(data.category),
+          type: data.type,
+          title: data.title.trim(),
+          barangay: data.barangay,
+          price: Number(data.price),
+          beds: Number(data.beds) || 0,
+          baths: Number(data.baths) || 0,
+          lotSqm: Number(data.lotSqm) || 0,
+          floorSqm: Number(data.floorSqm) || 0,
+          titleType: data.titleType,
+          titleStatus: data.titleType === "TCT" ? "Clean title" : (current && current.titleStatus) || "Listed by realtor",
+          parkingNote: (data.parkingNote || "").trim(),
+          condition: (data.condition || "").trim(),
+          pagibigReady: document.getElementById("ls-pagibig").checked,
+          inspected2026: document.getElementById("ls-inspected").checked,
+          description: data.description.trim(),
+          highlights: (data.features || "").split("\n").map(function (s) { return s.trim(); }).filter(Boolean),
+          why: (data.why || "").trim(),
+          address: (data.address || "").trim() || (data.barangay + ", General Santos City"),
+          lat: pinLat,
+          lng: pinLng,
+          images: listingPhotos.slice(),
+          listed: (current && current.listed) || new Date().toISOString().slice(0, 10)
+        };
+        if (editingId) {
+          writeListings(myListings().map(function (x) { return x.id === editingId ? item : x; }));
+        } else {
+          writeListings(myListings().concat(item));
+        }
+        resetListingForm();
+        renderMine();
+      });
+
+      document.getElementById("listing-cancel").addEventListener("click", resetListingForm);
+
+      var pendingRemoveId = null;
+      document.getElementById("my-listings").addEventListener("click", function (e) {
+        var edit = e.target.closest("[data-edit-listing]");
+        if (edit) {
+          var found = myListings().find(function (item) { return item.id === edit.getAttribute("data-edit-listing"); });
+          if (found) fillListingForm(found);
+          return;
+        }
+        var btn = e.target.closest("[data-remove-listing]");
+        if (!btn) return;
+        pendingRemoveId = btn.getAttribute("data-remove-listing");
+        var listing = myListings().find(function (item) { return item.id === pendingRemoveId; });
+        var label = listing && listing.title ? "“" + listing.title + "”" : "this listing";
+        document.getElementById("remove-copy").textContent =
+          "Are you sure you want to remove " + label + "? This cannot be undone.";
+        document.getElementById("remove-modal").hidden = false;
+      });
+
+      function closeRemoveModal() {
+        document.getElementById("remove-modal").hidden = true;
+        pendingRemoveId = null;
+      }
+      document.getElementById("remove-cancel").addEventListener("click", closeRemoveModal);
+      document.getElementById("remove-modal").addEventListener("click", function (e) {
+        if (e.target.id === "remove-modal") closeRemoveModal();
+      });
+      document.getElementById("remove-confirm").addEventListener("click", function () {
+        if (!pendingRemoveId) return;
+        if (editingId === pendingRemoveId) resetListingForm();
+        writeListings(myListings().filter(function (item) { return item.id !== pendingRemoveId; }));
+        closeRemoveModal();
+        renderMine();
+      });
+
+      renderMine();
+    });
+  </script>
+</body>
+</html>

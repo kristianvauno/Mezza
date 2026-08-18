@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en-PH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign up | Mezza</title>
+  <meta name="description" content="Create a Mezza account to list properties in General Santos City and keep photos and details in one place.">
+  <link rel="canonical" href="https://mezza.ph/signup.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="signup">
+  <header id="site-header" class="site-header"></header>
+  <main class="wrap page-hero" style="max-width: 480px;">
+    <p class="eyebrow">Account</p>
+    <h1>Sign up</h1>
+    <p class="lede">Create an account to stack your GenSan listings, photos, and details in one place.</p>
+    <form class="form-card" id="signup-form" style="margin-top: 22px;">
+      <div class="field">
+        <label for="su-name">Full name</label>
+        <input id="su-name" name="name" autocomplete="name" required>
+      </div>
+      <div class="field" style="margin-top: 12px;">
+        <label for="su-email">Email</label>
+        <input id="su-email" name="email" type="email" autocomplete="email" required>
+      </div>
+      <div class="field" style="margin-top: 12px;">
+        <label for="su-password">Password</label>
+        <input id="su-password" name="password" type="password" autocomplete="new-password" required minlength="6">
+      </div>
+      <div class="field" style="margin-top: 12px;">
+        <label for="su-confirm">Confirm password</label>
+        <input id="su-confirm" name="confirm" type="password" autocomplete="new-password" required minlength="6">
+      </div>
+      <p class="tiny" id="su-error" hidden style="color: var(--danger); margin-top: 10px;"></p>
+      <button class="btn btn-clay btn-full" type="submit" style="margin-top: 18px;">Create account</button>
+      <p class="tiny" style="margin-top: 12px;">Already have an account? <a href="login.html">Login</a></p>
+    </form>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (currentUser()) {
+        location.replace("listings.html");
+        return;
+      }
+      document.getElementById("signup-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var name = document.getElementById("su-name").value.trim();
+        var email = document.getElementById("su-email").value.trim();
+        var pass = document.getElementById("su-password").value;
+        var confirm = document.getElementById("su-confirm").value;
+        var err = document.getElementById("su-error");
+        if (pass !== confirm) {
+          err.hidden = false;
+          err.textContent = "Passwords do not match.";
+          return;
+        }
+        var accounts = getAccounts();
+        if (accounts.some(function (a) { return a.email.toLowerCase() === email.toLowerCase(); })) {
+          err.hidden = false;
+          err.textContent = "That email already has a profile. Login instead.";
+          return;
+        }
+        accounts.push({
+          name: name,
+          email: email,
+          password: pass,
+          phone: "",
+          agency: "",
+          prc: "",
+          city: "General Santos City",
+          bio: "",
+          listings: [],
+          created: new Date().toISOString()
+        });
+        saveAccounts(accounts);
+        setSession(email);
+        location.href = "profile.html";
+      });
+    });
+  </script>
+</body>
+</html>

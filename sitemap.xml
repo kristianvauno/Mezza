@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://mezza.ph/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://mezza.ph/listings.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://mezza.ph/areas.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mezza.ph/guides.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mezza.ph/foreign.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mezza.ph/about.html</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://mezza.ph/login.html</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://mezza.ph/signup.html</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://mezza.ph/privacy.html</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://mezza.ph/property.html?id=city-heights-family-home</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mezza.ph/property.html?id=lagao-bungalow-sm</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mezza.ph/property.html?id=san-isidro-townhouse</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mezza.ph/property.html?id=apopong-house-lot</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mezza.ph/property.html?id=bula-coastal-lot</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mezza.ph/property.html?id=calumpang-commercial</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mezza.ph/property.html?id=fatima-farm-lot</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://mezza.ph/property.html?id=tambler-warehouse</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://mezza.ph/property.html?id=labangal-near-kcc</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mezza.ph/property.html?id=katangawan-starter</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mezza.ph/property.html?id=dadiangas-mixed-use</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mezza.ph/property.html?id=conel-view-lot</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://mezza.ph/property.html?id=city-heights-vacant-lot</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mezza.ph/property.html?id=san-isidro-duplex</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mezza.ph/property.html?id=lagao-rent-3br</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mezza.ph/property.html?id=city-heights-rent-4br</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+</urlset>

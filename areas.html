@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en-PH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Best Barangays to Buy Property in General Santos City | Mezza</title>
+  <meta name="description" content="City Heights, Lagao, San Isidro, Apopong, Bula, Calumpang, Labangal, and Tambler — what each GenSan barangay is actually good for, and what to watch.">
+  <link rel="canonical" href="https://mezza.ph/areas.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"Which barangay in General Santos City is best for families?","acceptedAnswer":{"@type":"Answer","text":"City Heights is the most requested village address for families. Lagao is better if you want malls and hospitals close. San Isidro is common for first homes."}},
+      {"@type":"Question","name":"Is General Santos City outside the typhoon belt?","acceptedAnswer":{"@type":"Answer","text":"Southern Mindanao is less exposed to typhoons than Luzon and the Visayas, but GenSan has flood pockets, coastal surge risk in Bula, and seismic risk along the Cotabato Trench — as shown on 8 June 2026."}}
+    ]
+  }
+  </script>
+</head>
+<body data-page="areas">
+  <header id="site-header" class="site-header"></header>
+  <main class="wrap page-hero">
+    <p class="eyebrow">26 barangays · one city</p>
+    <h1>Neighborhoods in General Santos</h1>
+    <p class="lede">GenSan is a highly urbanized city of about 722,000 people on Sarangani Bay. The right barangay depends on whether you want a village gate, a shop-house, a farm, or the airport road.</p>
+    <div id="area-list" class="guide-grid" style="margin-top:28px"></div>
+    <section class="section" style="padding-bottom:0">
+      <h2>How we talk about this city</h2>
+      <p>Pioneer Avenue and Santiago Boulevard still organize downtown. SM, KCC, Robinsons, Gaisano, and Veranza pull daily traffic. The airport sits in Tambler. The bay sits under Bula and the older coastal puroks. Upland barangays such as Conel trade access for air and views.</p>
+      <p>We do not rank barangays as “posh” or “cheap.” We tell you who the listing is for, and what breaks a deal: unsigned titles, agricultural conversion, village restrictions, or a house that was not looked at after 8 June 2026.</p>
+    </section>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("area-list").innerHTML = AREAS.map(function (a) {
+        return '<a class="guide-card" href="listings.html?barangay=' + encodeURIComponent(a.name) + '">' +
+          '<img src="' + a.image + '" alt="' + a.name + ', General Santos City" style="width:100%;height:140px;object-fit:cover;border-radius:12px;margin-bottom:12px">' +
+          "<h3>" + a.name + "</h3><p>" + a.blurb + "</p>" +
+          '<p class="tiny"><strong>Good for:</strong> ' + a.goodFor + "<br><strong>Watch:</strong> " + a.watch + "</p></a>";
+      }).join("");
+    });
+  </script>
+</body>
+</html>

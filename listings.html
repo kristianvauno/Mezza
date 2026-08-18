@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en-PH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Property for Sale and Rent in General Santos City | Mezza Listings</title>
+  <meta name="description" content="Browse houses, lots, townhouses, farms, and commercial property in General Santos City. Filter by barangay, title type, Pag-IBIG, and 2026 inspection status.">
+  <link rel="canonical" href="https://mezza.ph/listings.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta property="og:title" content="GenSan property listings | Mezza">
+  <meta property="og:description" content="City Heights, Lagao, San Isidro, Apopong, Bula, Calumpang, Tambler.">
+  <meta property="og:image" content="images/house-city-heights.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="listings">
+  <header id="site-header" class="site-header"></header>
+  <main class="wrap page-hero">
+    <p class="eyebrow">Inventory</p>
+    <h1>Listings in General Santos City</h1>
+    <p class="lede">Filter the way a Gensanon actually buys: barangay, papers, budget, and whether someone walked the house after June 2026.</p>
+
+    <div class="toolbar" style="margin-top:28px">
+      <form class="filters" id="filter-form">
+        <h2>Refine</h2>
+        <div class="filter-group">
+          <span class="field-label">Listings</span>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="intent" value="" checked> All</label>
+            <label class="choice"><input type="radio" name="intent" value="sale"> Selling</label>
+            <label class="choice"><input type="radio" name="intent" value="rent"> Rentals</label>
+          </div>
+        </div>
+        <div class="field filter-group">
+          <label for="f-q">Keyword</label>
+          <input id="f-q" name="q" placeholder="City Heights, warehouse, duplex">
+        </div>
+        <div class="field filter-group">
+          <label for="f-barangay">Barangay</label>
+          <select id="f-barangay" name="barangay">
+            <option value="">All barangays</option>
+            <option>Apopong</option>
+            <option>Bula</option>
+            <option>Calumpang</option>
+            <option>City Heights</option>
+            <option>Conel</option>
+            <option>Dadiangas West</option>
+            <option>Fatima</option>
+            <option>Katangawan</option>
+            <option>Labangal</option>
+            <option>Lagao</option>
+            <option>San Isidro</option>
+            <option>Tambler</option>
+          </select>
+        </div>
+        <div class="field filter-group">
+          <label for="f-type">Type</label>
+          <select id="f-type" name="type">
+            <option value="">Any type</option>
+            <option value="house">House and lot</option>
+            <option value="townhouse">Townhouse</option>
+            <option value="duplex">Duplex</option>
+            <option value="lot">Residential lot</option>
+            <option value="commercial">Commercial</option>
+            <option value="warehouse">Warehouse</option>
+            <option value="farm">Farm lot</option>
+          </select>
+        </div>
+        <div class="field filter-group">
+          <label for="f-budget">Budget</label>
+          <select id="f-budget" name="budget">
+            <option value="">Any</option>
+            <option value="0-3000000">Sale up to ₱3M</option>
+            <option value="3000000-6000000">₱3M – ₱6M</option>
+            <option value="6000000-10000000">₱6M – ₱10M</option>
+            <option value="10000000-">₱10M+</option>
+            <option value="0-20000">Rent up to ₱20k</option>
+            <option value="20000-40000">Rent ₱20k – ₱40k</option>
+            <option value="40000-">Rent ₱40k+</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <span class="field-label">Title</span>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="titleType" value="" checked> Any papers</label>
+            <label class="choice"><input type="radio" name="titleType" value="TCT"> TCT</label>
+            <label class="choice"><input type="radio" name="titleType" value="CCT"> CCT</label>
+            <label class="choice"><input type="radio" name="titleType" value="Tax Declaration"> Tax declaration only</label>
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="field-label">Flags</span>
+          <div class="choices">
+            <label class="choice"><input type="checkbox" name="pagibig"> Pag-IBIG ready</label>
+            <label class="choice"><input type="checkbox" name="inspected"> Inspected after June 2026</label>
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-full" id="clear-filters" type="button">Clear filters</button>
+      </form>
+
+      <div>
+        <div class="results-head">
+          <p id="result-count" class="tiny" style="font-size:14px;color:var(--ink-soft)">Loading listings…</p>
+          <div class="field" style="min-width:180px">
+            <label for="sort">Sort</label>
+            <select id="sort">
+              <option value="new">Newest</option>
+              <option value="price-asc">Price: low to high</option>
+              <option value="price-desc">Price: high to low</option>
+              <option value="lot">Largest lot</option>
+            </select>
+          </div>
+        </div>
+        <div class="results-grid" id="listing-grid"></div>
+      </div>
+    </div>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/listings.js"></script>
+</body>
+</html>
