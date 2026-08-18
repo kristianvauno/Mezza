@@ -65,6 +65,10 @@
     localStorage.setItem("ts-user", JSON.stringify({ email: email, at: new Date().toISOString() }));
   };
 
+  window.isVerifiedAgent = function (a) {
+    return !!(a && a.name && a.phone && a.photo && (a.prc || a.certified));
+  };
+
   const TYPE_IMAGES = {
     house: "images/house-bungalow.jpg",
     townhouse: "images/house-townhouse.jpg",
@@ -72,11 +76,43 @@
     lot: "images/lot-residential.jpg",
     commercial: "images/lot-commercial.jpg",
     warehouse: "images/warehouse.jpg",
-    farm: "images/farm.jpg"
+    farm: "images/farm.jpg",
+    condo: "images/mixed-use.jpg",
+    studio: "images/house-townhouse.jpg",
+    apartment: "images/house-labangal.jpg",
+    dorm: "images/house-townhouse.jpg",
+    office: "images/office.jpg",
+    parking: "images/lot-commercial.jpg"
+  };
+  window.TYPE_LABELS = {
+    house: "House and lot",
+    townhouse: "Townhouse",
+    duplex: "Duplex",
+    lot: "Residential lot",
+    commercial: "Commercial",
+    warehouse: "Warehouse",
+    farm: "Farm lot",
+    condo: "Condominium",
+    studio: "Studio",
+    apartment: "Apartment",
+    dorm: "Dormitory",
+    office: "Office",
+    parking: "Parking space"
   };
 
   window.listingCategoryToIntent = function (category) {
     return category === "rentals" ? "rent" : "sale";
+  };
+
+  window.inspectLabel = function (p) {
+    const raw = (p && p.inspectedDate) || "";
+    if (!raw) return "Inspected";
+    const parts = String(raw).split("-");
+    const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const month = months[Number(parts[1]) - 1];
+    const year = parts[0];
+    if (month && year) return "Inspected " + month + " " + year;
+    return "Inspected";
   };
 
   window.normalizeRealtorListing = function (item, owner) {
@@ -102,13 +138,21 @@
       why: item.why || "",
       yearBuilt: item.yearBuilt || null,
       furnishing: item.furnishing || "",
+      petFriendly: !!item.petFriendly,
+      duration: item.duration || (intent === "rent" ? "monthly" : ""),
+      billing: item.billing || (intent === "rent" ? "monthly" : "sale"),
+      videoUrl: item.videoUrl || "",
+      hasLocalVideo: !!item.hasLocalVideo,
+      views: Number(item.views) || 0,
+      updated: item.updated || item.listed || new Date().toISOString().slice(0, 10),
       titleType: item.titleType || "TCT",
       titleStatus: item.titleStatus || "Listed by realtor",
       titleNote: item.titleNote || "",
       whoCanBuy: intent === "rent" ? "anyone" : "filipino",
       pagibigReady: !!item.pagibigReady,
       bankAssumable: false,
-      inspected2026: false,
+      inspected2026: !!(item.inspected2026 || item.inspectedDate),
+      inspectedDate: item.inspectedDate || "",
       inspectionNote: "",
       floodNote: "",
       hoa: 0,
@@ -125,7 +169,9 @@
       ownerEmail: owner && owner.email,
       ownerName: owner && owner.name,
       ownerWhatsapp: owner && (owner.whatsapp || owner.phone),
-      ownerPhone: owner && (owner.phone || owner.whatsapp)
+      ownerPhone: owner && (owner.phone || owner.whatsapp),
+      ownerPhoto: owner && owner.photo,
+      ownerVerified: !!(owner && isVerifiedAgent(owner))
     };
   };
 
@@ -226,14 +272,19 @@
           <div class="card-badges">
             <span class="chip chip-clay">${p.intent === "rent" ? "For rent" : "For sale"}</span>
             ${p.titleType ? `<span class="chip chip-gold">${p.titleType}</span>` : ""}
-            ${p.inspected2026 ? `<span class="chip chip-ok">Inspected 2026</span>` : ""}
+            ${p.inspected2026 || p.inspectedDate ? `<span class="chip chip-ok">${inspectLabel(p)}</span>` : ""}
           </div>
         </a>
         <button class="save-btn" type="button" data-save="${p.id}" aria-pressed="${fav}" title="Save">♥</button>
         <div class="card-body">
           <div class="card-price">${priceLabel(p)}</div>
           <h3 class="card-title"><a href="property.html?id=${p.id}">${p.title}</a></h3>
-          <div class="card-meta">${p.barangay} · ${p.type} · ${p.ref}</div>
+          <div class="card-meta">${p.barangay} · ${(window.TYPE_LABELS && TYPE_LABELS[p.type]) || p.type} · ${p.ref}</div>
+          <div class="card-agent">
+            ${p.ownerEmail ? `<a href="agent.html?e=${encodeURIComponent(p.ownerEmail)}">${p.ownerVerified ? "✓ " : ""}${p.ownerName || "Agent"}</a>` : (p.ownerName || "")}
+            ${p.updated ? `<span>${typeof timeAgo === "function" ? timeAgo(p.updated) : p.updated}</span>` : ""}
+            ${p.views ? `<span>${p.views} views</span>` : ""}
+          </div>
           <div class="card-specs spec-pills">
             ${p.beds ? `<span class="spec-pill">${p.beds} bed</span>` : ""}
             ${p.baths ? `<span class="spec-pill">${p.baths} bath</span>` : ""}
@@ -244,6 +295,9 @@
             ${p.titleStatus ? `<span class="chip chip-gold">${p.titleStatus}</span>` : ""}
             ${p.pagibigReady ? `<span class="chip chip-gold">Pag-IBIG ready</span>` : ""}
             ${p.exclusive ? `<span class="chip chip-gold">Exclusive</span>` : ""}
+            ${p.furnishing ? `<span class="chip">${p.furnishing}</span>` : ""}
+            ${p.petFriendly ? `<span class="chip chip-ok">Pet-friendly</span>` : ""}
+            ${p.ownerVerified ? `<span class="chip chip-ok">Verified</span>` : ""}
           </div>
           ${shareRowHTML(p)}
         </div>
@@ -269,14 +323,18 @@
         <nav class="nav" id="site-nav" aria-label="Primary">
           ${item("listings.html", "Listings", "listings")}
           ${item("areas.html", "Neighborhoods", "areas")}
+          ${item("agents.html", "Agents", "agents")}
+          ${item("reels.html", "Reels", "reels")}
           ${item("guides.html", "Guides", "guides")}
+          ${item("help.html", "Help", "help")}
           ${item("about.html", "About", "about")}
+          ${currentUser() ? item("inbox.html", "Inbox", "inbox") : ""}
           ${currentUser() ? item("profile.html", "My profile", "profile") : ""}
         </nav>
         <div class="header-cta">
           ${
             currentUser()
-              ? `<a class="btn btn-ghost" href="profile.html">My profile</a><button class="btn btn-clay" type="button" id="logout-btn">Log out</button>`
+              ? `<button class="btn btn-clay" type="button" id="logout-btn">Log out</button>`
               : `<a class="btn btn-ghost" href="login.html">Login</a><a class="btn btn-clay" href="signup.html">Sign up</a>`
           }
           <button class="menu-btn" type="button" id="menu-btn" aria-expanded="false" aria-controls="site-nav">Menu</button>
@@ -295,7 +353,11 @@
           <h3>Explore</h3>
           <ul>
             <li><a href="listings.html">Listings</a></li>
+            <li><a href="agents.html">Agents</a></li>
+            <li><a href="reels.html">Reels</a></li>
             <li><a href="areas.html">Barangays</a></li>
+            <li><a href="help.html">Help</a></li>
+            <li><a href="blog.html">Blog</a></li>
             <li><a href="foreign.html">Foreign &amp; dual citizens</a></li>
             ${currentUser() ? `<li><a href="profile.html">My profile</a></li>` : ""}
           </ul>
@@ -307,14 +369,6 @@
             <li><a href="guides.html#maceda">Maceda Law &amp; PD 957</a></li>
             <li><a href="guides.html#quake">After the June 2026 earthquake</a></li>
             <li><a href="privacy.html">Privacy notice</a></li>
-          </ul>
-        </div>
-        <div>
-          <h3>Visit</h3>
-          <ul>
-            <li><a href="tel:${SITE.phone}">${SITE.phoneDisplay}</a></li>
-            <li><a href="mailto:${SITE.email}">${SITE.email}</a></li>
-            <li><a href="${waLink()}">WhatsApp</a></li>
           </ul>
         </div>
       </div>
@@ -471,6 +525,17 @@
       const leads = JSON.parse(localStorage.getItem("ts-leads") || "[]");
       leads.push({ ...data, at: new Date().toISOString() });
       localStorage.setItem("ts-leads", JSON.stringify(leads));
+      if (typeof sendSiteMessage === "function" && data.toEmail) {
+        sendSiteMessage({
+          listingId: data.propertyId,
+          listingTitle: document.getElementById("inquire-property")?.textContent || "",
+          toEmail: data.toEmail,
+          fromName: data.name,
+          fromEmail: data.email,
+          fromMobile: data.mobile,
+          text: data.message
+        });
+      }
       const body = inquiryText();
       const email = data.toEmail || SITE.email;
       const subject = encodeURIComponent("Viewing request: " + (document.getElementById("inquire-property")?.textContent || "Mezza listing"));

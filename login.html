@@ -28,12 +28,31 @@
         <input id="login-password" name="password" type="password" autocomplete="current-password" required minlength="6">
       </div>
       <button class="btn btn-clay btn-full" type="submit" style="margin-top: 18px;">Login</button>
-      <p class="tiny" style="margin-top: 12px;">No account yet? <a href="signup.html">Sign up</a></p>
+      <p class="tiny" style="margin-top: 12px;"><a href="#" id="forgot-link">Forgot your login?</a> · <a href="signup.html">Sign up</a></p>
     </form>
+    <div class="form-card" id="forgot-box" hidden style="margin-top: 16px;">
+      <h2>Accounts on this device</h2>
+      <p class="tiny">Mezza saves logins only in this browser. Pick your email and set a new password.</p>
+      <ul id="forgot-list" class="detail-list" style="margin: 12px 0;"></ul>
+      <p class="tiny" id="forgot-empty" hidden>No account was found on this computer. Sign up again — listings from another browser will not appear here.</p>
+      <form id="reset-form" hidden>
+        <div class="field">
+          <label for="reset-email">Email</label>
+          <input id="reset-email" type="email" readonly>
+        </div>
+        <div class="field" style="margin-top: 12px;">
+          <label for="reset-password">New password</label>
+          <input id="reset-password" type="password" required minlength="6">
+        </div>
+        <button class="btn btn-clay" type="submit" style="margin-top: 14px;">Save new password</button>
+      </form>
+      <div class="success" id="reset-ok" hidden>Password updated. You can log in now.</div>
+    </div>
   </main>
   <footer id="site-footer"></footer>
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/platform.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       if (currentUser()) {
@@ -48,11 +67,50 @@
           return a.email.toLowerCase() === email.toLowerCase() && a.password === pass;
         });
         if (!account) {
-          alert("No profile matches that email and password. Sign up first.");
+          document.getElementById("forgot-link").click();
           return;
         }
         setSession(email);
         location.href = "profile.html";
+      });
+
+      document.getElementById("forgot-link").addEventListener("click", function (e) {
+        e.preventDefault();
+        var box = document.getElementById("forgot-box");
+        box.hidden = false;
+        var accounts = getAccounts();
+        var list = document.getElementById("forgot-list");
+        list.innerHTML = "";
+        document.getElementById("forgot-empty").hidden = accounts.length > 0;
+        document.getElementById("reset-form").hidden = accounts.length === 0;
+        accounts.forEach(function (a) {
+          var li = document.createElement("li");
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "btn btn-ghost";
+          btn.textContent = (a.name ? a.name + " · " : "") + a.email;
+          btn.addEventListener("click", function () {
+            document.getElementById("reset-email").value = a.email;
+            document.getElementById("login-email").value = a.email;
+            document.getElementById("reset-form").hidden = false;
+          });
+          li.appendChild(btn);
+          list.appendChild(li);
+        });
+      });
+
+      document.getElementById("reset-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var email = document.getElementById("reset-email").value.trim();
+        var pass = document.getElementById("reset-password").value;
+        var accounts = getAccounts();
+        var i = accounts.findIndex(function (a) { return a.email.toLowerCase() === email.toLowerCase(); });
+        if (i < 0) return;
+        accounts[i].password = pass;
+        saveAccounts(accounts);
+        document.getElementById("reset-ok").hidden = false;
+        document.getElementById("login-email").value = email;
+        document.getElementById("login-password").value = pass;
       });
     });
   </script>

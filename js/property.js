@@ -47,6 +47,7 @@
     };
     if (p.intent === "sale") schema.offers = { "@type": "Offer", price: p.price, priceCurrency: "PHP", availability: "https://schema.org/InStock" };
     document.getElementById("listing-schema").textContent = JSON.stringify(schema);
+    if (typeof bumpViews === "function") p.views = bumpViews(p.id);
 
     const icon = (d) =>
       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${d}</svg>`;
@@ -70,7 +71,7 @@
     const features = (p.highlights || []).filter(Boolean);
     const legal = [];
     if (p.titleType) legal.push(p.titleType + (p.titleStatus ? " — " + p.titleStatus : ""));
-    if (p.inspected2026) legal.push("Inspected (2026)");
+    if (p.inspected2026 || p.inspectedDate) legal.push(inspectLabel(p));
     if (p.pagibigReady) legal.push("Pag-IBIG ready");
     if (p.exclusive) legal.push("Exclusive listing");
     const why = p.why || "";
@@ -126,6 +127,30 @@
           ${features.length ? `<div class="detail-block"><h2>Key features &amp; amenities</h2><ul class="detail-list">${features.map((f) => `<li>${f}</li>`).join("")}</ul></div>` : ""}
           ${legal.length ? `<div class="detail-block"><h2>Legal &amp; status</h2><ul class="detail-list">${legal.map((f) => `<li>${f}</li>`).join("")}</ul></div>` : ""}
           ${why ? `<div class="detail-block"><h2>Why this property</h2><div class="prose"><p>${why}</p></div></div>` : ""}
+          <div class="detail-block" id="video-tour-block" ${p.videoUrl || p.hasLocalVideo ? "" : "hidden"}>
+            <h2>Video tour</h2>
+            ${p.videoUrl ? `<div class="video-frame"><iframe title="Video tour" src="${videoEmbed(p.videoUrl)}" allowfullscreen></iframe></div>` : `<video id="local-tour" class="video-preview" controls style="max-height:none"></video>`}
+          </div>
+          ${p.ownerEmail ? `<div class="agent-mini">
+            <div>
+              <p class="eyebrow">Listed by</p>
+              <h3>${p.ownerVerified ? "✓ " : ""}${p.ownerName || "Agent"}</h3>
+              <p class="tiny">${p.views || 0} views · updated ${timeAgo(p.updated || p.listed)}</p>
+              <a class="btn btn-ghost" href="agent.html?e=${encodeURIComponent(p.ownerEmail)}">View agent profile</a>
+            </div>
+          </div>` : ""}
+          <div class="detail-block">
+            <h2>Message the agent</h2>
+            <form class="form-card" id="chat-form">
+              <div class="form-grid">
+                <div class="field"><label for="ch-name">Your name</label><input id="ch-name" required></div>
+                <div class="field"><label for="ch-email">Email</label><input id="ch-email" type="email" required></div>
+                <div class="field full"><label for="ch-msg">Message</label><textarea id="ch-msg" rows="3" required>I would like to know more about ${p.title}.</textarea></div>
+              </div>
+              <button class="btn btn-clay" type="submit" style="margin-top:12px">Send in-site message</button>
+              <div class="success" id="ch-ok" hidden>Message sent to the agent inbox.</div>
+            </form>
+          </div>
           <h2>Map</h2>
           <iframe title="Map of ${p.barangay}, General Santos City" style="width:100%;height:280px;border:0;border-radius:16px" src="https://www.openstreetmap.org/export/embed.html?bbox=${p.lng - 0.02}%2C${p.lat - 0.02}%2C${p.lng + 0.02}%2C${p.lat + 0.02}&layer=mapnik&marker=${p.lat}%2C${p.lng}"></iframe>
         </div>
@@ -172,6 +197,31 @@
       btn.addEventListener("click", () => showLight(lightIndex + Number(btn.dataset.lightStep)));
     });
     box?.addEventListener("click", (e) => { if (e.target === box) box.hidden = true; });
+    if (p.hasLocalVideo && !p.videoUrl && typeof getListingVideo === "function") {
+      getListingVideo(p.id).then((file) => {
+        const el = document.getElementById("local-tour");
+        const block = document.getElementById("video-tour-block");
+        if (file && el) {
+          el.src = URL.createObjectURL(file);
+          if (block) block.hidden = false;
+        }
+      });
+    }
+    document.getElementById("chat-form")?.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (typeof sendSiteMessage === "function") {
+        sendSiteMessage({
+          listingId: p.id,
+          listingTitle: p.title,
+          toEmail: p.ownerEmail || SITE.email,
+          fromName: document.getElementById("ch-name").value.trim(),
+          fromEmail: document.getElementById("ch-email").value.trim(),
+          text: document.getElementById("ch-msg").value.trim()
+        });
+      }
+      document.getElementById("ch-ok").hidden = false;
+      e.target.reset();
+    });
   }
 
   document.addEventListener("DOMContentLoaded", render);

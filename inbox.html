@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en-PH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inbox | Mezza</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body data-page="inbox">
+  <header id="site-header" class="site-header"></header>
+  <main class="wrap page-hero">
+    <p class="eyebrow">Messages</p>
+    <h1>Inbox</h1>
+    <p class="lede">Inquiries sent from listing pages land here.</p>
+    <div id="inbox-list" style="margin-top:22px"></div>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/platform.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var user = currentUser();
+      if (!user) { location.replace("login.html"); return; }
+      var mine = getMessages().filter(function (m) { return m.toEmail && m.toEmail.toLowerCase() === user.email.toLowerCase(); });
+      mine.forEach(function (m) { m.read = true; });
+      saveMessages(getMessages().map(function (m) {
+        if (m.toEmail && m.toEmail.toLowerCase() === user.email.toLowerCase()) m.read = true;
+        return m;
+      }));
+      var host = document.getElementById("inbox-list");
+      if (!mine.length) { host.innerHTML = '<div class="empty"><h3>No messages yet</h3><p>When a buyer uses Request a viewing or Message the agent, it shows here.</p></div>'; return; }
+      host.innerHTML = mine.map(function (m) {
+        return '<article class="guide-card" style="margin-bottom:10px"><strong>' + (m.fromName || "Buyer") + "</strong> · " +
+          '<a href="property.html?id=' + (m.listingId || "") + '">' + (m.listingTitle || "Listing") + "</a>" +
+          "<p>" + (m.text || "") + "</p><p class='tiny'>" + (m.fromEmail || "") + " · " + (m.fromMobile || "") + " · " + timeAgo(m.at) + "</p></article>";
+      }).join("");
+    });
+  </script>
+</body>
+</html>

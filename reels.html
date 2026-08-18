@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en-PH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Property reels | Mezza GenSan</title>
+  <meta name="description" content="Watch listing videos and photo tours for General Santos City properties.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body data-page="reels">
+  <header id="site-header" class="site-header"></header>
+  <main class="wrap page-hero">
+    <p class="eyebrow">Property reels</p>
+    <h1>See listings in motion</h1>
+    <p class="lede">Video tours when an agent adds a link. Photo tours for everything else.</p>
+    <div class="reel-grid" id="reel-grid" style="margin-top:28px"></div>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/platform.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("reel-grid").innerHTML = PROPERTIES.map(function (p) {
+        var media = p.videoUrl
+          ? '<div class="video-frame"><iframe src="' + videoEmbed(p.videoUrl) + '" title="' + p.title + '" allowfullscreen></iframe></div>'
+          : '<a href="property.html?id=' + p.id + '"><img src="' + p.images[0] + '" alt=""></a>';
+        return '<article class="reel-card">' + media + "<h3>" + p.title + "</h3><p class='tiny'>" + p.barangay + " · " + priceLabel(p) +
+          " · " + (p.views || 0) + " views</p><a class='btn btn-ghost' href='property.html?id=" + p.id + "'>View</a></article>";
+      }).join("");
+    });
+  </script>
+</body>
+</html>

@@ -5,6 +5,10 @@
   <url><loc>https://mezza.ph/areas.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://mezza.ph/guides.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://mezza.ph/foreign.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mezza.ph/agents.html</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://mezza.ph/reels.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://mezza.ph/help.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://mezza.ph/blog.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
   <url><loc>https://mezza.ph/about.html</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
   <url><loc>https://mezza.ph/login.html</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>
   <url><loc>https://mezza.ph/signup.html</loc><changefreq>yearly</changefreq><priority>0.4</priority></url>

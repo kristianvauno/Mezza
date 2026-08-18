@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en-PH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent | Mezza</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body data-page="agents">
+  <header id="site-header" class="site-header"></header>
+  <main class="wrap page-hero" id="agent-root"></main>
+  <footer id="site-footer"></footer>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/platform.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var email = new URLSearchParams(location.search).get("e") || "";
+      var a = findPublicAgent(email);
+      var root = document.getElementById("agent-root");
+      if (!a) { root.innerHTML = "<h1>Agent not found</h1>"; return; }
+      document.title = a.name + " | Mezza agent";
+      var listings = PROPERTIES.filter(function (p) { return p.ownerEmail && p.ownerEmail.toLowerCase() === a.email.toLowerCase(); });
+      var reviews = getReviews(a.email);
+      root.innerHTML =
+        '<p class="eyebrow">Agent profile</p><div class="agent-hero">' +
+        (a.photo ? '<img class="avatar-preview" src="' + a.photo + '" alt="">' : '<div class="agent-fallback lg">' + a.name.charAt(0) + "</div>") +
+        "<div><h1>" + (a.verified ? "✓ " : "") + a.name + "</h1>" +
+        "<p>" + (a.bio || "Mezza listing agent in General Santos City.") + "</p>" +
+        '<p class="tiny">' + a.rating + " ★ · " + listings.length + " listings · " + (a.prc || "PRC on request") +
+        (a.certified ? " · Certified manager" : "") + "</p>" +
+        '<p class="tiny">Avg. response: Active</p></div></div>' +
+        '<h2>Listings</h2><div class="cards">' + (listings.length ? listings.map(cardHTML).join("") : "<p>No public listings yet.</p>") + "</div>" +
+        '<h2 style="margin-top:36px">Client reviews</h2><div id="rev-list">' +
+        (reviews.length ? reviews.map(function (r) {
+          return '<article class="guide-card"><strong>' + r.stars + " ★ " + (r.name || "Client") + "</strong><p>" + r.text + "</p><p class='tiny'>" + timeAgo(r.at) + "</p></article>";
+        }).join("") : "<p class='tiny'>No reviews yet. Be the first.</p>") + "</div>" +
+        '<form class="form-card" id="rev-form" style="margin-top:18px;max-width:520px"><h3>Leave a review</h3>' +
+        '<div class="field"><label>Your name</label><input id="rv-name" required></div>' +
+        '<div class="field" style="margin-top:10px"><label>Stars</label><select id="rv-stars"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></div>' +
+        '<div class="field" style="margin-top:10px"><label>Review</label><textarea id="rv-text" rows="3" required></textarea></div>' +
+        '<button class="btn btn-clay" style="margin-top:12px">Post review</button></form>';
+      document.getElementById("rev-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        addReview(a.email, { name: document.getElementById("rv-name").value.trim(), stars: Number(document.getElementById("rv-stars").value), text: document.getElementById("rv-text").value.trim() });
+        location.reload();
+      });
+    });
+  </script>
+</body>
+</html>
